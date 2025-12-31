@@ -39,7 +39,6 @@ const BlockAdmin = ({ children }) => {
       </div>
     );
   }
-  
   // Nếu là admin -> redirect về trang admin
   if (user?.role === 'ADMIN') {
     return <Navigate to="/admin" replace />;

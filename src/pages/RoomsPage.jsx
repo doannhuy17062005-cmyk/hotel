@@ -42,6 +42,7 @@ const RoomsPage = () => {
     }
   };
 
+  
   const handleSearch = (params) => {
     const queryParams = new URLSearchParams();
     if (params.checkIn) queryParams.set('checkIn', params.checkIn);

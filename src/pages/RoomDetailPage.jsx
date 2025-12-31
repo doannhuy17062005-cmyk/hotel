@@ -193,6 +193,7 @@ const RoomDetailPage = () => {
                     Phòng Không Khả Dụng
                   </button>
                 )}
+                
               </div>
             </div>
           </div>

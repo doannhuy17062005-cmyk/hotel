@@ -52,6 +52,7 @@ const PaymentResultPage = () => {
       </div>
     );
   }
+  
 
   return (
     <div className="page" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

@@ -18,9 +18,9 @@ const LoginPage = () => {
     try {
       const user = await login(email, password);
       
-      // Từ chối nếu là admin - phải dùng trang admin login
+      //Từ chối nếu là admin - phải dùng trang admin login
       if (user.role === 'ADMIN') {
-        // Logout ngay để ngăn redirect tự động
+        //Logout ngay để ngăn redirect tự động
         logout();
         toast.error('Tài khoản Admin vui lòng đăng nhập tại trang Quản Trị.');
         setLoading(false);
