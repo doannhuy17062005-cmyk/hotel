@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig({
-  base: '/hotel/',          // ✅ quan trọng cho GitHub Pages
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/hotel/' : '/',   // ✅ dev /, deploy /hotel/
   plugins: [react()],
   server: {
     port: 5173,
@@ -13,4 +13,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))
