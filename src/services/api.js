@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://backend-gzok.onrender.com/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://parker-unstigmatized-eleanor.ngrok-free.dev/api';
 
 const api = axios.create({
   baseURL: API_URL,
