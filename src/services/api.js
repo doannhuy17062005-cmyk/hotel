@@ -103,7 +103,3 @@ export const uploadAPI = {
 };
 
 export default api;
-
-
-src/services/api.js
-src/services/config.js
