@@ -12,4 +12,4 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 // Used for serving uploaded files like /uploads/**
 export const BACKEND_BASE_URL =
-  import.meta.env.VITE_BACKEND_BASE_URL || 'http://localhost:8080' || 'https://parker-unstigmatized-eleanor.ngrok-free.dev';
+  import.meta.env.VITE_BACKEND_BASE_URL || 'https://parker-unstigmatized-eleanor.ngrok-free.dev';
