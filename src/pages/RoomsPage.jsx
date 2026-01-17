@@ -18,41 +18,51 @@ const RoomsPage = () => {
   const fetchRoomTypes = async () => {
     try {
       const response = await roomAPI.getRoomTypes();
-      setRoomTypes(response.data);
+
+      // ✅ FIX
+      const types =
+        response.data?.data?.content ??
+        response.data?.data ??
+        response.data ??
+        [];
+
+      setRoomTypes(types);
     } catch (error) {
       console.error('Error fetching room types:', error);
     }
   };
 
-const fetchRooms = async () => {
-  setLoading(true);
-  try {
-    const params = {};
-    if (searchParams.get('checkIn')) params.checkIn = searchParams.get('checkIn');
-    if (searchParams.get('checkOut')) params.checkOut = searchParams.get('checkOut');
-    if (searchParams.get('guests')) params.guests = searchParams.get('guests');
-    if (searchParams.get('roomTypeId')) params.roomTypeId = searchParams.get('roomTypeId');
+  const fetchRooms = async () => {
+    setLoading(true);
+    try {
+      const params = {};
+      if (searchParams.get('checkIn')) params.checkIn = searchParams.get('checkIn');
+      if (searchParams.get('checkOut')) params.checkOut = searchParams.get('checkOut');
+      if (searchParams.get('guests')) params.guests = searchParams.get('guests');
+      if (searchParams.get('roomTypeId')) params.roomTypeId = searchParams.get('roomTypeId');
 
-    let response;
+      let response;
+      if (Object.keys(params).length === 0) {
+        response = await roomAPI.getAll();
+      } else {
+        response = await roomAPI.search(params);
+      }
 
-    if (Object.keys(params).length === 0) {
-      // ✅ CHƯA SEARCH → LẤY TẤT CẢ PHÒNG
-      response = await roomAPI.getAll();
-    } else {
-      // ✅ CÓ SEARCH → SEARCH
-      response = await roomAPI.search(params);
+      // ✅ FIX
+      const roomsData =
+        response.data?.data?.content ??
+        response.data?.data ??
+        response.data ??
+        [];
+
+      setRooms(roomsData);
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setRooms(response.data);
-  } catch (error) {
-    console.error('Error fetching rooms:', error);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  
   const handleSearch = (params) => {
     const queryParams = new URLSearchParams();
     if (params.checkIn) queryParams.set('checkIn', params.checkIn);
@@ -92,7 +102,6 @@ const fetchRooms = async () => {
             </div>
           ) : (
             <div className="empty-state">
-              <div className="empty-state-icon"></div>
               <h3>Không tìm thấy phòng</h3>
               <p>Vui lòng thử lại với tiêu chí tìm kiếm khác</p>
             </div>

@@ -20,13 +20,20 @@ const RoomDetailPage = () => {
   const fetchRoom = async () => {
     try {
       const response = await roomAPI.getById(id);
-      setRoom(response.data);
+
+      // ✅ FIX Ở ĐÂY
+      const roomData =
+        response.data?.data ??     // backend bọc data
+        response.data;             // fallback
+
+      setRoom(roomData);
     } catch (error) {
       console.error('Error fetching room:', error);
     } finally {
       setLoading(false);
     }
   };
+
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -152,9 +159,9 @@ const RoomDetailPage = () => {
                   <span style={{ color: 'var(--gray-500)' }}>/ đêm</span>
                 </div>
 
-                <div style={{ 
-                  display: 'flex', 
-                  gap: 'var(--spacing-lg)', 
+                <div style={{
+                  display: 'flex',
+                  gap: 'var(--spacing-lg)',
                   marginBottom: 'var(--spacing-lg)',
                   padding: 'var(--spacing-md)',
                   background: 'var(--gray-50)',
@@ -183,8 +190,8 @@ const RoomDetailPage = () => {
                 </div>
 
                 {room.status === 'AVAILABLE' ? (
-                  <button 
-                    onClick={handleBooking} 
+                  <button
+                    onClick={handleBooking}
                     className="btn btn-secondary btn-lg"
                     style={{ width: '100%' }}
                   >
@@ -195,7 +202,7 @@ const RoomDetailPage = () => {
                     Phòng Không Khả Dụng
                   </button>
                 )}
-                
+
               </div>
             </div>
           </div>
