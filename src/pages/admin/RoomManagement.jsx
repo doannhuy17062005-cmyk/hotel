@@ -4,6 +4,8 @@ import { roomAPI, adminAPI, uploadAPI } from '../../services/api';
 import { toast } from 'react-toastify';
 import { FaPlus, FaEdit, FaTrash, FaTimes, FaImage, FaSpinner } from 'react-icons/fa';
 
+import { BACKEND_BASE_URL } from '../../services/config';
+
 const RoomManagement = () => {
   const [rooms, setRooms] = useState([]);
   const [roomTypes, setRoomTypes] = useState([]);
@@ -62,7 +64,7 @@ const RoomManagement = () => {
       // Set preview for existing image
       if (room.imageUrl) {
         setImagePreview(room.imageUrl.startsWith('/uploads/') 
-          ? `http://localhost:8080${room.imageUrl}` 
+          ? `${BACKEND_BASE_URL}${room.imageUrl}` 
           : room.imageUrl);
       } else {
         setImagePreview('');

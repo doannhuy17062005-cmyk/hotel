@@ -4,6 +4,8 @@ import { roomAPI, bookingAPI } from '../services/api';
 import { toast } from 'react-toastify';
 import { FaCalendar, FaUsers, FaCreditCard } from 'react-icons/fa';
 
+import { BACKEND_BASE_URL } from '../services/config';
+
 const BookingPage = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -68,7 +70,7 @@ const BookingPage = () => {
       return 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=400&fit=crop';
     }
     if (imageUrl.startsWith('/uploads/')) {
-      return `http://localhost:8080${imageUrl}`;
+      return `${BACKEND_BASE_URL}${imageUrl}`;
     }
     return imageUrl;
   };

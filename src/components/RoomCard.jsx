@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { FaUsers, FaBed } from 'react-icons/fa';
 
+import { BACKEND_BASE_URL } from '../services/config';
+
 const RoomCard = ({ room }) => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -27,7 +29,7 @@ const RoomCard = ({ room }) => {
       return 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop';
     }
     if (imageUrl.startsWith('/uploads/')) {
-      return `http://localhost:8080${imageUrl}`;
+      return `${BACKEND_BASE_URL}${imageUrl}`;
     }
     return imageUrl;
   };

@@ -24,23 +24,33 @@ const RoomsPage = () => {
     }
   };
 
-  const fetchRooms = async () => {
-    setLoading(true);
-    try {
-      const params = {};
-      if (searchParams.get('checkIn')) params.checkIn = searchParams.get('checkIn');
-      if (searchParams.get('checkOut')) params.checkOut = searchParams.get('checkOut');
-      if (searchParams.get('guests')) params.guests = searchParams.get('guests');
-      if (searchParams.get('roomTypeId')) params.roomTypeId = searchParams.get('roomTypeId');
+const fetchRooms = async () => {
+  setLoading(true);
+  try {
+    const params = {};
+    if (searchParams.get('checkIn')) params.checkIn = searchParams.get('checkIn');
+    if (searchParams.get('checkOut')) params.checkOut = searchParams.get('checkOut');
+    if (searchParams.get('guests')) params.guests = searchParams.get('guests');
+    if (searchParams.get('roomTypeId')) params.roomTypeId = searchParams.get('roomTypeId');
 
-      const response = await roomAPI.search(params);
-      setRooms(response.data);
-    } catch (error) {
-      console.error('Error fetching rooms:', error);
-    } finally {
-      setLoading(false);
+    let response;
+
+    if (Object.keys(params).length === 0) {
+      // ✅ CHƯA SEARCH → LẤY TẤT CẢ PHÒNG
+      response = await roomAPI.getAll();
+    } else {
+      // ✅ CÓ SEARCH → SEARCH
+      response = await roomAPI.search(params);
     }
-  };
+
+    setRooms(response.data);
+  } catch (error) {
+    console.error('Error fetching rooms:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   
   const handleSearch = (params) => {

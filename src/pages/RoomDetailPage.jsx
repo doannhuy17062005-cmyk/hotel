@@ -4,6 +4,8 @@ import { roomAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { FaUsers, FaBed, FaWifi, FaTv, FaSnowflake, FaCoffee, FaCheck } from 'react-icons/fa';
 
+import { BACKEND_BASE_URL } from '../services/config';
+
 const RoomDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const RoomDetailPage = () => {
       return 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&h=600&fit=crop';
     }
     if (imageUrl.startsWith('/uploads/')) {
-      return `http://localhost:8080${imageUrl}`;
+      return `${BACKEND_BASE_URL}${imageUrl}`;
     }
     return imageUrl;
   };
