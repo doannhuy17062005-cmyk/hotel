@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-import { API_BASE_URL } from './config';
+// Thay bằng API endpoint trực tiếp -> ví dụ ngrok HTTPS + /api
+// NOTE: nếu deploy lên GitHub Pages, build lại sau khi thay URL này
+const HARD_CODED_API_URL = 'https://parker-unstigmatized-eleanor.ngrok-free.dev/api';
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: HARD_CODED_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -31,7 +33,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       const currentPath = window.location.pathname;
       const isAuthPage = currentPath.includes('/login') || currentPath.includes('/register');
-      
+
       // Không redirect nếu đang ở trang login/register (để hiển thị lỗi đăng nhập sai)
       if (!isAuthPage) {
         localStorage.removeItem('token');
@@ -74,16 +76,16 @@ export const adminAPI = {
   updateRoom: (id, data) => api.put(`/admin/rooms/${id}`, data),
   updateRoomStatus: (id, status) => api.put(`/admin/rooms/${id}/status`, { status }),
   deleteRoom: (id) => api.delete(`/admin/rooms/${id}`),
-  
+
   // Room Types
   createRoomType: (data) => api.post('/admin/room-types', data),
   updateRoomType: (id, data) => api.put(`/admin/room-types/${id}`, data),
   deleteRoomType: (id) => api.delete(`/admin/room-types/${id}`),
-  
+
   // Bookings
   getAllBookings: () => api.get('/admin/bookings'),
   updateBookingStatus: (id, status) => api.put(`/admin/bookings/${id}/status`, { status }),
-  
+
   // Statistics
   getStatistics: () => api.get('/admin/statistics'),
 };
@@ -101,3 +103,7 @@ export const uploadAPI = {
 };
 
 export default api;
+
+
+src/services/api.js
+src/services/config.js
