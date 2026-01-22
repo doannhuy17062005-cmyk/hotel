@@ -15,20 +15,30 @@ const HomePage = () => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const [roomsRes, typesRes] = await Promise.all([
-        roomAPI.getAll(),
-        roomAPI.getRoomTypes()
-      ]);
-      setRooms(roomsRes.data.filter(r => r.status === 'AVAILABLE').slice(0, 6));
-      setRoomTypes(typesRes.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const fetchData = async () => {
+  try {
+    const roomsResponse = await roomAPI.getAll();
+    const typesResponse = await roomAPI.getRoomTypes();
+
+    const roomsData = roomsResponse?.data ?? [];
+    const roomTypesData = typesResponse?.data ?? [];
+console.log('ROOMS RESPONSE:', roomsResponse);
+console.log('ROOMS DATA:', roomsResponse.data);
+    setRooms(
+      roomsData
+        .filter(room => room.status === 'AVAILABLE')
+        .slice(0, 6)
+    );
+
+    setRoomTypes(roomTypesData);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const handleSearch = (params) => {
     const queryParams = new URLSearchParams();
