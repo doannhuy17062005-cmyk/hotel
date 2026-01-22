@@ -20,23 +20,30 @@ const HomePage = () => {
     const roomsResponse = await roomAPI.getAll();
     const typesResponse = await roomAPI.getRoomTypes();
 
-    const roomsData = roomsResponse?.data ?? [];
-    const roomTypesData = typesResponse?.data ?? [];
-console.log('ROOMS RESPONSE:', roomsResponse);
-console.log('ROOMS DATA:', roomsResponse.data);
+    // ÉP CHUẨN DATA
+    const rooms = roomsResponse?.data;
+    const roomTypes = typesResponse?.data;
+
+    if (!Array.isArray(rooms)) {
+      console.error('Rooms is not an array:', rooms);
+      setRooms([]);
+      return;
+    }
+
     setRooms(
-      roomsData
+      rooms
         .filter(room => room.status === 'AVAILABLE')
         .slice(0, 6)
     );
 
-    setRoomTypes(roomTypesData);
+    setRoomTypes(Array.isArray(roomTypes) ? roomTypes : []);
   } catch (error) {
     console.error('Error fetching data:', error);
   } finally {
     setLoading(false);
   }
 };
+
 
 
 
