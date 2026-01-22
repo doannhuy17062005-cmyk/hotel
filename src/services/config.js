@@ -8,7 +8,7 @@
 //   VITE_API_BASE_URL=https://xxxx.ngrok-free.app/api
 //   VITE_BACKEND_BASE_URL=https://xxxx.ngrok-free.app
 
-export const API_BASE_URL = 'https://abc123.ngrok-free.dev/api';
+export const API_BASE_URL = "http://localhost:8080/api";
 
 // Used for serving uploaded files like /uploads/**
 export const BACKEND_BASE_URL =
