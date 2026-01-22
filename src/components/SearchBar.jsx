@@ -7,12 +7,20 @@ const SearchBar = ({ onSearch, roomTypes = [] }) => {
   const [guests, setGuests] = useState(1);
   const [roomTypeId, setRoomTypeId] = useState('');
 
+  // 🔒 ÉP CHẮC CHẮN roomTypes LÀ ARRAY
+  const safeRoomTypes = Array.isArray(roomTypes) ? roomTypes : [];
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch({ checkIn, checkOut, guests, roomTypeId: roomTypeId || undefined });
+
+    onSearch({
+      checkIn: checkIn || undefined,
+      checkOut: checkOut || undefined,
+      guests,
+      roomTypeId: roomTypeId || undefined,
+    });
   };
 
-  // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split('T')[0];
 
   return (
@@ -21,10 +29,10 @@ const SearchBar = ({ onSearch, roomTypes = [] }) => {
         <FaSearch style={{ marginRight: '10px', color: 'var(--secondary)' }} />
         Tìm Phòng Phù Hợp
       </h3>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="search-grid">
-          {/* Check-in Date */}
+          {/* Check-in */}
           <div className="search-field">
             <label className="search-label">
               <FaCalendarAlt />
@@ -34,12 +42,12 @@ const SearchBar = ({ onSearch, roomTypes = [] }) => {
               type="date"
               className="search-input"
               value={checkIn}
-              onChange={(e) => setCheckIn(e.target.value)}
               min={today}
+              onChange={(e) => setCheckIn(e.target.value)}
             />
           </div>
 
-          {/* Check-out Date */}
+          {/* Check-out */}
           <div className="search-field">
             <label className="search-label">
               <FaCalendarAlt />
@@ -49,12 +57,12 @@ const SearchBar = ({ onSearch, roomTypes = [] }) => {
               type="date"
               className="search-input"
               value={checkOut}
-              onChange={(e) => setCheckOut(e.target.value)}
               min={checkIn || today}
+              onChange={(e) => setCheckOut(e.target.value)}
             />
           </div>
 
-          {/* Number of Guests */}
+          {/* Guests */}
           <div className="search-field">
             <label className="search-label">
               <FaUsers />
@@ -65,13 +73,15 @@ const SearchBar = ({ onSearch, roomTypes = [] }) => {
               value={guests}
               onChange={(e) => setGuests(Number(e.target.value))}
             >
-              {[1, 2, 3, 4, 5, 6].map(n => (
-                <option key={n} value={n}>{n} người</option>
+              {[1, 2, 3, 4, 5, 6].map((n) => (
+                <option key={n} value={n}>
+                  {n} người
+                </option>
               ))}
             </select>
           </div>
 
-          {/* Room Type */}
+          {/* Room type */}
           <div className="search-field">
             <label className="search-label">
               <FaDoorOpen />
@@ -83,13 +93,15 @@ const SearchBar = ({ onSearch, roomTypes = [] }) => {
               onChange={(e) => setRoomTypeId(e.target.value)}
             >
               <option value="">Tất cả</option>
-              {roomTypes.map(type => (
-                <option key={type.id} value={type.id}>{type.name}</option>
+              {safeRoomTypes.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
+                </option>
               ))}
             </select>
           </div>
 
-          {/* Search Button */}
+          {/* Submit */}
           <div className="search-field search-btn-wrapper">
             <button type="submit" className="search-btn">
               <FaSearch />

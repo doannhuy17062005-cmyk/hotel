@@ -9,6 +9,7 @@ const RoomTypeManagement = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingType, setEditingType] = useState(null);
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -21,20 +22,13 @@ const RoomTypeManagement = () => {
 
   const fetchRoomTypes = async () => {
     try {
-      const response = await roomAPI.getRoomTypes();
-      setRoomTypes(response.data);
-    } catch (error) {
-      console.error('Error fetching room types:', error);
+      const res = await roomAPI.getRoomTypes();
+      setRoomTypes(res.data || []);
+    } catch {
+      toast.error('Không tải được loại phòng');
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(price);
   };
 
   const handleOpenModal = (type = null) => {
@@ -47,11 +41,7 @@ const RoomTypeManagement = () => {
       });
     } else {
       setEditingType(null);
-      setFormData({
-        name: '',
-        description: '',
-        basePrice: ''
-      });
+      setFormData({ name: '', description: '', basePrice: '' });
     }
     setShowModal(true);
   };
@@ -59,129 +49,79 @@ const RoomTypeManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        ...formData,
+        basePrice: Number(formData.basePrice)
+      };
+
       if (editingType) {
-        await adminAPI.updateRoomType(editingType.id, formData);
-        toast.success('Cập nhật loại phòng thành công');
+        await adminAPI.updateRoomType(editingType.id, payload);
+        toast.success('Đã cập nhật loại phòng');
       } else {
-        await adminAPI.createRoomType(formData);
-        toast.success('Thêm loại phòng thành công');
+        await adminAPI.createRoomType(payload);
+        toast.success('Đã thêm loại phòng');
       }
+
       setShowModal(false);
       fetchRoomTypes();
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Thao tác thất bại');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Thao tác thất bại');
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Bạn có chắc muốn xóa loại phòng này?')) return;
-    try {
-      await adminAPI.deleteRoomType(id);
-      toast.success('Xóa loại phòng thành công');
-      fetchRoomTypes();
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Xóa thất bại');
-    }
+    if (!window.confirm('Xóa loại phòng này?')) return;
+    await adminAPI.deleteRoomType(id);
+    toast.success('Đã xóa');
+    fetchRoomTypes();
   };
 
   return (
     <AdminLayout title="Quản Lý Loại Phòng">
-      <div style={{ marginBottom: 'var(--spacing-lg)', display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={() => handleOpenModal()} className="btn btn-primary">
-          <FaPlus /> Thêm Loại Phòng
-        </button>
-      </div>
+      <button className="btn btn-primary" onClick={() => handleOpenModal()}>
+        <FaPlus /> Thêm loại phòng
+      </button>
 
       {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-        </div>
+        <div className="spinner" />
       ) : (
-        <div className="table-container">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Tên Loại Phòng</th>
-                <th>Mô Tả</th>
-                <th>Giá Cơ Bản</th>
-                <th>Thao Tác</th>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tên</th>
+              <th>Mô tả</th>
+              <th>Giá</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {roomTypes.map((t) => (
+              <tr key={t.id}>
+                <td>{t.id}</td>
+                <td>{t.name}</td>
+                <td>{t.description || '-'}</td>
+                <td>{t.basePrice.toLocaleString('vi-VN')} ₫</td>
+                <td>
+                  <FaEdit onClick={() => handleOpenModal(t)} />
+                  <FaTrash onClick={() => handleDelete(t.id)} />
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {roomTypes.map(type => (
-                <tr key={type.id}>
-                  <td>{type.id}</td>
-                  <td><strong>{type.name}</strong></td>
-                  <td style={{ maxWidth: '300px' }}>{type.description || '-'}</td>
-                  <td>{formatPrice(type.basePrice)}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
-                      <button onClick={() => handleOpenModal(type)} className="btn btn-ghost btn-sm">
-                        <FaEdit />
-                      </button>
-                      <button onClick={() => handleDelete(type.id)} className="btn btn-danger btn-sm">
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       )}
 
-      {/* Modal */}
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3 className="modal-title">{editingType ? 'Sửa Loại Phòng' : 'Thêm Loại Phòng Mới'}</h3>
-              <button onClick={() => setShowModal(false)} className="modal-close">
-                <FaTimes />
-              </button>
-            </div>
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>{editingType ? 'Sửa loại phòng' : 'Thêm loại phòng'}</h3>
             <form onSubmit={handleSubmit}>
-              <div className="modal-body">
-                <div className="form-group">
-                  <label className="form-label">Tên Loại Phòng *</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Giá Cơ Bản (VNĐ) *</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    value={formData.basePrice}
-                    onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Mô Tả</label>
-                  <textarea
-                    className="form-textarea"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows="4"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button type="button" onClick={() => setShowModal(false)} className="btn btn-ghost">
-                  Hủy
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingType ? 'Cập Nhật' : 'Thêm Mới'}
-                </button>
-              </div>
+              <input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
+              <input type="number" value={formData.basePrice} onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })} required />
+              <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+              <button type="submit">Lưu</button>
+              <button type="button" onClick={() => setShowModal(false)}>Hủy</button>
             </form>
           </div>
         </div>
