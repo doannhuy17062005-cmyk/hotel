@@ -44,23 +44,27 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-                // Public endpoints (BẤT KỲ AI CŨNG TRUY CẬP ĐƯỢC)
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/rooms/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/room-types/**").permitAll()
-                .requestMatchers("/uploads/**").permitAll()
-                
-                // 🌟 THÊM 2 DÒNG NÀY ĐỂ MỞ CỔNG CHO VNPAY VÀ ĐẶT PHÒNG KHÔNG BỊ CHẶN 403
-                .requestMatchers("/api/bookings/**").permitAll()
-                .requestMatchers("/api/payment/**").permitAll() // Đề phòng bạn đặt endpoint VNPay là /api/payment
-                
-                // Admin endpoints
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/upload/**").hasRole("ADMIN")
-                // User endpoints
-                .anyRequest().authenticated()
-            )
+           .authorizeHttpRequests(auth -> auth
+    // Public endpoints
+    .requestMatchers("/api/auth/**").permitAll()
+    .requestMatchers(HttpMethod.GET, "/api/rooms/**").permitAll()
+    .requestMatchers(HttpMethod.GET, "/api/room-types/**").permitAll()
+    .requestMatchers("/uploads/**").permitAll()
+
+    // Booking và thanh toán
+    .requestMatchers("/api/bookings/**").permitAll()
+    .requestMatchers("/api/payment/**").permitAll()
+
+    // Admin
+    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+    .requestMatchers("/api/upload/**").hasRole("ADMIN")
+
+    // Khách hàng phải đăng nhập mới được gửi và xem liên hệ
+    .requestMatchers("/api/contacts/**").authenticated()
+
+    // Các API còn lại
+    .anyRequest().authenticated()
+)
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )

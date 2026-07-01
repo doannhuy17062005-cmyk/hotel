@@ -1,8 +1,13 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  FaHotel, FaChartPie, FaBed, FaThLarge, FaCalendarCheck, 
-  FaSignOutAlt 
+import {
+  FaHotel,
+  FaChartPie,
+  FaBed,
+  FaThLarge,
+  FaCalendarCheck,
+  FaEnvelope,
+  FaSignOutAlt
 } from 'react-icons/fa';
 
 const AdminLayout = ({ children, title }) => {
@@ -16,10 +21,31 @@ const AdminLayout = ({ children, title }) => {
   };
 
   const menuItems = [
-    { path: '/admin', icon: <FaChartPie />, label: 'Dashboard' },
-    { path: '/admin/rooms', icon: <FaBed />, label: 'Quản Lý Phòng' },
-    { path: '/admin/room-types', icon: <FaThLarge />, label: 'Loại Phòng' },
-    { path: '/admin/bookings', icon: <FaCalendarCheck />, label: 'Đặt Phòng' },
+    {
+      path: '/admin',
+      icon: <FaChartPie />,
+      label: 'Dashboard'
+    },
+    {
+      path: '/admin/rooms',
+      icon: <FaBed />,
+      label: 'Quản Lý Phòng'
+    },
+    {
+      path: '/admin/room-types',
+      icon: <FaThLarge />,
+      label: 'Loại Phòng'
+    },
+    {
+      path: '/admin/bookings',
+      icon: <FaCalendarCheck />,
+      label: 'Đặt Phòng'
+    },
+    {
+      path: '/admin/contacts',
+      icon: <FaEnvelope />,
+      label: 'Liên Hệ'
+    }
   ];
 
   return (
@@ -32,27 +58,48 @@ const AdminLayout = ({ children, title }) => {
 
         <nav>
           <ul className="admin-sidebar-nav">
-            {menuItems.map(item => (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  className={`admin-sidebar-link ${location.pathname === item.path ? 'active' : ''}`}
-                >
-                  {item.icon}
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {menuItems.map((item) => {
+              const isActive =
+                item.path === '/admin'
+                  ? location.pathname === '/admin'
+                  : location.pathname.startsWith(item.path);
+
+              return (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    className={`admin-sidebar-link ${
+                      isActive ? 'active' : ''
+                    }`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
-        <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-2xl)' }}>
-          <button 
+        <div
+          style={{
+            marginTop: 'auto',
+            paddingTop: 'var(--spacing-2xl)'
+          }}
+        >
+          <button
             onClick={handleLogout}
             className="admin-sidebar-link"
-            style={{ width: '100%', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left' }}
+            style={{
+              width: '100%',
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              textAlign: 'left'
+            }}
           >
-            <FaSignOutAlt /> Đăng Xuất
+            <FaSignOutAlt />
+            Đăng Xuất
           </button>
         </div>
       </aside>
@@ -61,6 +108,7 @@ const AdminLayout = ({ children, title }) => {
         <div className="admin-header">
           <h1>{title}</h1>
         </div>
+
         {children}
       </main>
     </div>

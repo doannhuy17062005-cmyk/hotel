@@ -18,6 +18,7 @@ import BookingHistoryPage from './pages/BookingHistoryPage';
 import ProfilePage from './pages/ProfilePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import NotificationsPage from './pages/NotificationsPage';
 import PaymentResultPage from './pages/PaymentResultPage';
 
 // Admin Pages
@@ -26,6 +27,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import RoomManagement from './pages/admin/RoomManagement';
 import RoomTypeManagement from './pages/admin/RoomTypeManagement';
 import BookingManagement from './pages/admin/BookingManagement';
+import AdminContactsPage from './pages/admin/AdminContactsPage';
 
 // Chatbox (rule-based, no AI)
 import ChatWidget from './components/ChatWidget';
@@ -186,7 +188,14 @@ function App() {
             <Footer />
           </ProtectedRoute>
         } />
-        
+        <Route path="/notifications" element={
+          <ProtectedRoute userOnly>
+            <Navbar />
+            <NotificationsPage />
+            <Footer />
+          </ProtectedRoute>
+        } />
+
         {/* Admin Routes */}
         <Route path="/admin" element={
           <ProtectedRoute adminOnly>
@@ -207,6 +216,11 @@ function App() {
           <ProtectedRoute adminOnly>
             <BookingManagement />
           </ProtectedRoute>
+        } />
+        <Route path="/admin/contacts" element={
+        <ProtectedRoute adminOnly>
+          <AdminContactsPage />
+        </ProtectedRoute>
         } />
         
         {/* Catch all - redirect admin về /admin, user về / */}
