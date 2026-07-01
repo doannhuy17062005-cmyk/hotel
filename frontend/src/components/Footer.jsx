@@ -27,7 +27,7 @@ const Footer = () => {
               <li><Link to="/">Trang Chủ</Link></li>
               <li><Link to="/rooms">Phòng</Link></li>
               <li><Link to="/my-bookings">Đặt Phòng</Link></li>
-              <li><a href="#">Về Chúng Tôi</a></li>
+              <Link to="/about">Về Chúng Tôi</Link>
             </ul>
           </div>
 
